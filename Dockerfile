@@ -8,6 +8,5 @@ RUN rm /etc/nginx/conf.d/example_ssl.conf
 ADD nginx/nginx.conf /etc/nginx/
 ADD client /client
 
-EXPOSE 8080:8080
 EXPOSE 80:80
 CMD ["nginx", "-g", "daemon off;"]
