@@ -27,7 +27,7 @@ todo.vm = (function() {
     // add a todo item to the list, and clear description field for next use
     vm.add = function() {
       if(vm.name()) {
-        m.request({method: 'POST', url: 'http://127.0.0.1/todo', data: {name: vm.name()}})
+        m.request({method: 'POST', url: '/todo', data: {name: vm.name()}})
           .then(function(posted){
             console.log('new item posted: ' + JSON.stringify(posted));
             vm.get();
@@ -41,7 +41,7 @@ todo.vm = (function() {
     // remove a todo item from list and DB
     vm.del = function(item) {
       console.log('Delete called for: ' + JSON.stringify(item));
-      var url = 'http://127.0.0.1/todo/' + item._id();
+      var url = '/todo/' + item._id();
       console.log('del() url: ' + url);
       m.request({method: 'DELETE', url: url})
         .then(function(){
@@ -61,7 +61,7 @@ todo.vm = (function() {
     console.log('Put executing on item: ' + JSON.stringify(item));
     var dto = {name : item.name(), done: item.done(), _id: item._id()}
     console.log('Put executing on DTO: ' + JSON.stringify(dto));
-    var url = 'http://127.0.0.1/todo/' + item._id();
+    var url = '/todo/' + item._id();
     console.log('put() url: ' + url);
     m.request({method: 'PUT', url: url, data: dto})
       .then(function(){
@@ -74,7 +74,7 @@ todo.vm = (function() {
 
   vm.get = function() {
     var newlist = m.prop([]);
-    m.request({method: 'GET', url: 'http://127.0.0.1/todo'})
+    m.request({method: 'GET', url: '/todo'})
       .then(newlist)
       .then(function(){
         console.log('vm.get(): ' + JSON.stringify(newlist()));
