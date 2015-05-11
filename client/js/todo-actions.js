@@ -1,46 +1,45 @@
+// initialise the connection
+var initSocket = function() {
+  var socket = io.connect();
+
+  // new data, publish the results
+  socket.on('update', function(data) {
+    console.log('socket.io update: ' + JSON.stringify(data));
+    PubSub.publish(Constants.dispatcher, {type: 'update', data: data});
+  });
+
+  // when calls succeed, publish the results
+  socket.on('success', function(data) {
+    console.log('socket.io success: ' + JSON.stringify(data));
+    Actions.getTodoList();
+  });
+
+  // when calls fail, publish the results on a different channel
+  socket.on('error', function(error) {
+    console.log('socket.io Error: ' + JSON.stringify(error));
+    PubSub.publish(Constants.dispatcher, {type: 'error', error: error});
+  });
+
+  return socket;
+};
+var _socketio = initSocket();
+
 // Actions - these call the todoServer
 var Actions = {
 
-    // emit() publishes a message to 'dispatcher' subscribers
-    emit: PubSub.publish.bind(PubSub, Constants.dispatcher),
-
-    handleResponse: function(err, data) {
-      if (err) {
-        console.log('Fermata error: ' + JSON.stringify(err));
-      } else {
-        console.log('Fermata OK: ' + JSON.stringify(data));
-        this.getTodoList();
-      }
-    },
-
-    handleGet: function(err, data) {
-      if (err) {
-        console.log('Fermata error: ' + JSON.stringify(err));
-      } else {
-        console.log('Fermata OK: ' + JSON.stringify(data));
-        this.emit({type: 'update', data:data});
-      }
-    },
-
     addTodo: function (todo) {
-        var server = fermata.json('/todo');
-        server.post(todo, this.handleResponse.bind(this));
+        _socketio.emit('post', todo);
     },
 
     updateTodo: function (todo) {
-        console.log('updating: ' + JSON.stringify(todo));
-        var server = fermata.json('/todo/' + todo._id);
-        server.put(todo, this.handleResponse.bind(this));
+        _socketio.emit('put', todo);
     },
 
     deleteTodo: function (todo) {
-        console.log('deleting: ' + JSON.stringify(todo));
-        var server = fermata.json('/todo/' + todo._id);
-        server.delete(todo, this.handleResponse.bind(this));
+        _socketio.emit('delete', todo);
     },
 
     getTodoList: function () {
-        var server = fermata.json('/todo');
-        server.get(this.handleGet.bind(this));
+        _socketio.emit('get');
     }
 }

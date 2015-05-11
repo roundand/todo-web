@@ -97,7 +97,6 @@ View.Todo = React.createClass({displayName: "Todo",
         var className = 'todo';
         var todo = (
             React.createElement("div", {className:  'todo', onClick: boundOnTodoSelect},
-//                "[", this.props._id, "] ", ' ',
                 this.props.name, "  ", ' ',
                 React.createElement("b", null,  this.props.done ? '☑' : '☐', " "), " ", ' '
             )
@@ -147,7 +146,6 @@ View.TodoEdit = React.createClass({displayName: "TodoEdit",
     render: function() {
         return (
             React.createElement("div", {className:  'todo selected' },
-//                "[", this.state._id, "] ", ' ',
                 React.createElement("input", {type: "text", onChange: this._onChangeName, value: this.state.name}), "  ", ' ',
                 React.createElement("b", null,
                     React.createElement("input", {
